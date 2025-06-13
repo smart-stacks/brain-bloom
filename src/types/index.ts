@@ -53,3 +53,31 @@ export interface CrisisAlert {
   timestamp: Date;
   actions: string[];
 }
+
+// Common types used throughout the application
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ApiResponse<T> {
+  data: T;
+  status: number;
+  message: string;
+  error?: string;
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  hasMore: boolean;
+}
+
+// Add more type definitions as needed
