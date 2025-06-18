@@ -1,3 +1,4 @@
+
 # BrainBloom App
 
 A modern web application built with React, TypeScript, and Vite.
@@ -83,3 +84,6 @@ This project uses:
 ## License
 
 [Your License Here] 
+
+# brain-bloom
+
