@@ -68,8 +68,7 @@ jobs:
         _REGION=${{ env.REGION }},\
         _REPOSITORY=${{ env.REPOSITORY }},\
         _IMAGE_NAME=${{ env.IMAGE_NAME }},\
-        _SERVICE_NAME=${{ env.SERVICE_NAME }} \
-        --gcs-log-dir=gs://${{ env.LOGS_BUCKET }}/logs
+        _SERVICE_NAME=${{ env.SERVICE_NAME }}
         
     - name: Display deployed service URL
       run: |
