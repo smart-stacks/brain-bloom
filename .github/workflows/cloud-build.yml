@@ -58,16 +58,6 @@ jobs:
     - name: Configure Docker for Artifact Registry
       run: |
         gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
-    
-    - name: Create logs bucket if needed
-      run: |
-        # Check if logs bucket exists, if not create it
-        if ! gsutil ls -b gs://${{ env.LOGS_BUCKET }} &>/dev/null; then
-          echo "Creating logs bucket: gs://${{ env.LOGS_BUCKET }}"
-          gsutil mb -l ${{ env.REGION }} gs://${{ env.LOGS_BUCKET }}
-          # Set appropriate permissions on the bucket
-          gsutil iam ch allUsers:objectViewer gs://${{ env.LOGS_BUCKET }}
-        fi
 
     - name: Build and Deploy Frontend
       run: |
