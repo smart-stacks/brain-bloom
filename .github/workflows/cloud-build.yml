@@ -1,0 +1,76 @@
+name: Deploy Frontend to Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**'  # Only trigger on changes to backend files
+      - '!.github/**'  # Ignore changes to GitHub files
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**'  # Only trigger on changes to backend files
+      - '!.github/**'  # Ignore changes to GitHub files
+
+  workflow_dispatch:  # Allows manual triggering
+    inputs:
+      region:
+        description: 'Deployment region'
+        required: true
+        default: 'europe-west2'
+        type: choice
+        options:
+          - 'europe-west2'
+
+env:
+  PROJECT_ID: static-concept-459810-q7
+  REGION: europe-west2
+  REPOSITORY: brainbloom
+  IMAGE_NAME: frontend
+  SERVICE_NAME: brainbloom-frontend
+  SERVICE_ACCOUNT: github-brainbloom-frontend@static-concept-459810-q7.iam.gserviceaccount.com
+  LOGS_BUCKET: static-concept-459810-q7_cloudbuild_logs
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ env.PROJECT_ID }}
+    
+    - name: Authenticate to Google Cloud
+      uses: 'google-github-actions/auth@v2'
+      with:
+        workload_identity_provider: projects/431880575932/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+        service_account: ${{ env.SERVICE_ACCOUNT }}
+        token_format: 'access_token'
+        audience: 'https://iam.googleapis.com/projects/431880575932/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+    
+    - name: Configure Docker for Artifact Registry
+      run: |
+        gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+    - name: Build and Deploy Frontend
+      run: |
+        # Build and submit with Cloud Build using custom logs bucket
+        gcloud builds submit --config=cloudbuild.yaml \
+        --async \
+        --substitutions=\
+        _REGION=${{ env.REGION }},\
+        _REPOSITORY=${{ env.REPOSITORY }},\
+        _IMAGE_NAME=${{ env.IMAGE_NAME }},\
+        _SERVICE_NAME=${{ env.SERVICE_NAME }}
+        
+    - name: Display deployed service URL
+      run: |
+        echo "Frontend deployed to: $(gcloud run services describe ${{ env.SERVICE_NAME }} --region=${{ env.REGION }} --format='value(status.url)')"
+
