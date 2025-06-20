@@ -28,7 +28,7 @@ env:
   REPOSITORY: brainbloom
   IMAGE_NAME: frontend
   SERVICE_NAME: brainbloom-frontend
-  SERVICE_ACCOUNT: github-actions-brainbloom@static-concept-459810-q7.iam.gserviceaccount.com
+  SERVICE_ACCOUNT: github-brainbloom-frontend@static-concept-459810-q7.iam.gserviceaccount.com
   LOGS_BUCKET: static-concept-459810-q7_cloudbuild_logs
 
 jobs:
