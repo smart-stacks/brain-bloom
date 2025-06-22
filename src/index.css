@@ -1,3 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom focus styles for better accessibility */
+@layer components {
+  .focus-ring {
+    @apply focus:outline-none focus:ring-4 focus:ring-primary-100 focus:border-primary-400;
+  }
+  
+  .input-focus {
+    @apply transition-all duration-200 focus:ring-4 focus:ring-primary-100 focus:border-primary-400 focus:outline-none;
+  }
+  
+  .button-hover {
+    @apply transition-all duration-200 hover:shadow-hover active:scale-95;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-primary bg-clip-text text-transparent;
+  }
+  
+  .backdrop-blur-soft {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+}
+
+/* Custom animations for login elements */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.1); }
+  50% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.2); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
