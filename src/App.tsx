@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, HelpCircle, Menu, X, ArrowLeft } from 'lucide-react';
-import { AppProvider } from './context/AppContext';
+import { Bot, HelpCircle, Menu, X, ArrowLeft, LogIn } from 'lucide-react';
+import { AppProvider, useApp } from './context/AppContext';
 import { Navigation } from './components/Navigation';
 import { EmergencyButton } from './components/EmergencyButton';
+import { LoginModal } from './components/LoginModal';
+import { UserAvatar } from './components/UserAvatar';
+import { LoadingScreen } from './components/LoadingScreen';
 import { ChatScreen } from './screens/ChatScreen';
 import { EmergencyScreen } from './screens/EmergencyScreen';
 import { PeerSupportScreen } from './screens/PeerSupportScreen';
@@ -123,8 +126,15 @@ function BackToChatButton() {
 function App() {
   const [activeTab, setActiveTab] = useState('chat');
   const [showEmergency, setShowEmergency] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { state, login, loginWithGoogle, logout } = useApp();
+
+  // Show loading screen while initializing
+  if (state.isLoading) {
+    return <LoadingScreen />;
+  }
 
   const handleEmergencyClick = () => {
     setShowEmergency(true);
@@ -133,6 +143,28 @@ function App() {
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
     navigate('/');
+  };
+
+  const handleLogin = async (email: string, password: string) => {
+    try {
+      await login(email, password);
+      setShowLoginModal(false);
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      await loginWithGoogle();
+      setShowLoginModal(false);
+    } catch (error) {
+      console.error('Google login failed:', error);
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
   };
 
   const renderScreen = () => {
@@ -188,14 +220,43 @@ function App() {
           
           <AnimatePresence mode="wait">
             {!showEmergency ? (
-              <motion.div
-                key="emergency-button"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-              >
-                <EmergencyButton onClick={handleEmergencyClick} />
-              </motion.div>
+              <>
+                {/* Login/User Avatar */}
+                {state.isAuthenticated && state.user ? (
+                  <motion.div
+                    key="user-avatar"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                  >
+                    <UserAvatar user={state.user} onLogout={handleLogout} />
+                  </motion.div>
+                ) : (
+                  <motion.button
+                    key="login-button"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowLoginModal(true)}
+                    className="flex items-center space-x-2 bg-gradient-primary text-white px-4 py-2 rounded-xl font-medium shadow-soft hover:shadow-hover transition-all duration-200"
+                  >
+                    <LogIn size={18} />
+                    <span className="hidden sm:inline">Login</span>
+                  </motion.button>
+                )}
+
+                {/* Emergency Button */}
+                <motion.div
+                  key="emergency-button"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                >
+                  <EmergencyButton onClick={handleEmergencyClick} />
+                </motion.div>
+              </>
             ) : (
               <motion.button
                 key="back-button"
@@ -248,6 +309,15 @@ function App() {
           </motion.nav>
         )}
       </AnimatePresence>
+
+      {/* Login Modal */}
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onLogin={handleLogin}
+        onGoogleLogin={handleGoogleLogin}
+        isLoading={state.isLoading}
+      />
     </div>
   );
 }

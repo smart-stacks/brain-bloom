@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { Message, PeerProfile, Resource, MoodEntry, AgentStatus, CrisisAlert } from '../types';
+import { authService, User } from '../services/auth';
 
 interface AppState {
   messages: Message[];
@@ -10,6 +11,9 @@ interface AppState {
   moods: MoodEntry[];
   agents: AgentStatus[];
   userLocation: { lat: number; lng: number } | null;
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 type AppAction =
@@ -20,7 +24,11 @@ type AppAction =
   | { type: 'SET_RESOURCES'; payload: Resource[] }
   | { type: 'ADD_MOOD_ENTRY'; payload: MoodEntry }
   | { type: 'SET_AGENTS'; payload: AgentStatus[] }
-  | { type: 'SET_LOCATION'; payload: { lat: number; lng: number } };
+  | { type: 'SET_LOCATION'; payload: { lat: number; lng: number } }
+  | { type: 'LOGIN'; payload: User }
+  | { type: 'LOGOUT' }
+  | { type: 'SET_LOADING'; payload: boolean }
+  | { type: 'INIT_USER'; payload: User | null };
 
 const initialState: AppState = {
   messages: [],
@@ -31,11 +39,17 @@ const initialState: AppState = {
   moods: [],
   agents: [],
   userLocation: null,
+  user: null,
+  isAuthenticated: false,
+  isLoading: true, // Start with loading true to check auth state
 };
 
 const AppContext = createContext<{
   state: AppState;
   dispatch: React.Dispatch<AppAction>;
+  login: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
+  logout: () => void;
 } | null>(null);
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -56,6 +70,29 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, agents: action.payload };
     case 'SET_LOCATION':
       return { ...state, userLocation: action.payload };
+    case 'LOGIN':
+      return { 
+        ...state, 
+        user: action.payload, 
+        isAuthenticated: true,
+        isLoading: false 
+      };
+    case 'LOGOUT':
+      return { 
+        ...state, 
+        user: null, 
+        isAuthenticated: false,
+        isLoading: false 
+      };
+    case 'SET_LOADING':
+      return { ...state, isLoading: action.payload };
+    case 'INIT_USER':
+      return { 
+        ...state, 
+        user: action.payload, 
+        isAuthenticated: !!action.payload,
+        isLoading: false 
+      };
     default:
       return state;
   }
@@ -63,6 +100,52 @@ function appReducer(state: AppState, action: AppAction): AppState {
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(appReducer, initialState);
+
+  // Initialize user from localStorage on app start
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        const currentUser = authService.getCurrentUser();
+        dispatch({ type: 'INIT_USER', payload: currentUser });
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        dispatch({ type: 'INIT_USER', payload: null });
+      }
+    };
+
+    initializeAuth();
+  }, []);
+
+  // Login function using auth service
+  const login = async (email: string, password: string) => {
+    dispatch({ type: 'SET_LOADING', payload: true });
+    
+    try {
+      const response = await authService.login({ email, password });
+      dispatch({ type: 'LOGIN', payload: response.user });
+    } catch (error) {
+      dispatch({ type: 'SET_LOADING', payload: false });
+      throw error;
+    }
+  };
+
+  // Google login function using auth service
+  const loginWithGoogle = async () => {
+    dispatch({ type: 'SET_LOADING', payload: true });
+    
+    try {
+      const response = await authService.loginWithGoogle();
+      dispatch({ type: 'LOGIN', payload: response.user });
+    } catch (error) {
+      dispatch({ type: 'SET_LOADING', payload: false });
+      throw error;
+    }
+  };
+
+  const logout = () => {
+    authService.logout();
+    dispatch({ type: 'LOGOUT' });
+  };
 
   useEffect(() => {
     // Get user location
@@ -89,7 +172,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AppContext.Provider value={{ state, dispatch }}>
+    <AppContext.Provider value={{ state, dispatch, login, loginWithGoogle, logout }}>
       {children}
     </AppContext.Provider>
   );
