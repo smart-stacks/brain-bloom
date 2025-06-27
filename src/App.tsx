@@ -285,18 +285,25 @@ function App() {
 
       {/* Main Content */}
       <main className="flex-1 overflow-hidden px-6 py-8">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={showEmergency ? 'emergency' : activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="h-full"
-          >
-            {renderScreen()}
-          </motion.div>
-        </AnimatePresence>
+        <Routes>
+          <Route path="/agents" element={<MeetAgentsScreen />} />
+          <Route path="/faq" element={<FAQScreen />} />
+          <Route path="/" element={
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={showEmergency ? 'emergency' : activeTab}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="h-full"
+              >
+                {renderScreen()}
+              </motion.div>
+            </AnimatePresence>
+          } />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
 
       {/* Navigation */}
