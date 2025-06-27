@@ -3,8 +3,6 @@
 
 **BrainBloom** is an AI-powered mental health companion designed to nurture emotional well-being through instant, intelligent, and compassionate support.
 
-![alt text](assets/image.png)
-
 ## 🌸 What Is BrainBloom?
 **BrainBloom** is a modular, AI-driven mental wellness system designed to cultivate emotional resilience and well-being. It orchestrates a collaborative team of intelligent agents—each specializing in a key aspect of mental health support.</br>
 
