@@ -18,6 +18,12 @@
 
 ![alt text](<BrainBloom-visual selection.png>)
 
+## How to get started ?
+
+- Follow this [developer's guide](DevelopersGuide.md)
+
+## Meet the Team
+
 ![project_team](assets/BrainBloom.png)
 
 - **Sonali Goel** (Backend Engineer) | [Website](https://sonaligoel.carrd.co/) | [GitHub](https://github.com/goelsonali) | [LinkedIn](https://www.linkedin.com/in/sonali-goel-tech/) | 
