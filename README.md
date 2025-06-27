@@ -1,89 +1,29 @@
 
 # BrainBloom App
 
-A modern web application built with React, TypeScript, and Vite.
+**BrainBloom** is an AI-powered mental health companion designed to nurture emotional well-being through instant, intelligent, and compassionate support.
 
-## Project Structure
+![alt text](assets/image.png)
 
-```
-brainbloom/
-├── public/           # Static assets
-│   ├── src/
-│   │   ├── assets/      # Project-specific assets (images, fonts, etc.)
-│   │   ├── components/  # React components
-│   │   ├── types/       # TypeScript type definitions
-│   │   ├── utils/       # Utility functions
-│   │   └── ...
-│   ├── .env.example     # Example environment variables
-│   ├── package.json     # Project dependencies
-│   └── ...
-```
+## 🌸 What Is BrainBloom?
+**BrainBloom** is a modular, AI-driven mental wellness system designed to cultivate emotional resilience and well-being. It orchestrates a collaborative team of intelligent agents—each specializing in a key aspect of mental health support.</br>
 
-## Getting Started
+### The system is designed to:
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd brainbloom
-   ```
+- Identify emotional states and assess risk in real-time based on user inputs.
+- Automate triage and intelligent escalation for high-risk situations, connecting users to urgent care when necessary.
+- Recommend tailored self-care resources and support options that match individual needs and contexts.
+- Facilitate empathetic, ongoing dialogue to nurture mental clarity and emotional growth.
+- Integrate with external APIs and data sources to deliver current, relevant, and diverse support services.
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+🌿 We currently use **Bolt** to rapidly prototype our multi-agent architecture. This prototype serves as a foundational platform for efficiently deploying agents that will interface with our backend multi-AI model infrastructure.
 
-3. **Set up environment variables**
-   - Copy `.env.example` to `.env`
-   - Update the values in `.env` with your actual configuration
+![alt text](<BrainBloom-visual selection.png>)
 
-4. **Start the development server**
-   ```bash
-   npm run dev
-   ```
+![project_team](assets/BrainBloom.png)
 
-## Available Scripts
+- **Sonali Goel** (Backend Engineer) | [Website](https://sonaligoel.carrd.co/) | [GitHub](https://github.com/goelsonali) | [LinkedIn](https://www.linkedin.com/in/sonali-goel-tech/) | 
+- **Arzu Caner** (Frontend Engineer) | [GitHub](https://github.com/arzucaner) | [LinkedIn](https://www.linkedin.com/in/arzucaner/) | [YouTube](@Codearz) |
+- **Sonika Janagill** (Backend and GCP Engineer) | [GitHub](https://github.com/sjanagill) | [LinkedIn](https://www.linkedin.com/in/sonikaj/) | 
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-
-## Environment Variables
-
-Create a `.env` file in the root directory with the following variables:
-
-```env
-VITE_API_URL=http://localhost:3000
-VITE_API_VERSION=v1
-VITE_ENABLE_ANALYTICS=false
-VITE_ENABLE_DEBUG_MODE=false
-VITE_MAPBOX_ACCESS_TOKEN=your_mapbox_token_here
-VITE_SOCKET_URL=ws://localhost:3000
-```
-
-## Tech Stack
-
-- React 18
-- TypeScript
-- Vite
-- Tailwind CSS
-- React Router
-- Framer Motion
-- Socket.IO Client
-- React Map GL
-- Date-fns
-
-## Development
-
-This project uses:
-- ESLint for code linting
-- TypeScript for type safety
-- Tailwind CSS for styling
-- Vite for fast development and building
-
-## License
-
-[Your License Here] 
-
-# brain-bloom
-
+</br>We would like to express our gratitude to the entire team for their contributions to our project.
