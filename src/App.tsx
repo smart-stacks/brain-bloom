@@ -16,6 +16,8 @@ import { ProgressScreen } from './screens/ProgressScreen';
 import { MonitorScreen } from './screens/MonitorScreen';
 import { MeetAgentsScreen } from './screens/MeetAgentsScreen';
 import { FAQScreen } from './screens/FAQScreen';
+import logoImage from './assets/logo.png';
+import boltBadgeImage from './assets/black_circle_360x360.png';
 
 function HeaderLinks() {
   const location = useLocation();
@@ -199,23 +201,42 @@ function App() {
         <div className="flex items-center space-x-4">
           <Link 
             to="/"
-            className="flex items-center space-x-3 group"
+            className="flex items-center group"
             onClick={() => setActiveTab('chat')}
           >
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="w-10 h-10 bg-gradient-primary rounded-xl flex items-center justify-center shadow-soft group-hover:opacity-90 transition-opacity"
+              className="flex items-center group-hover:opacity-90 transition-opacity"
             >
-              <span className="text-white font-bold text-lg">BB</span>
+              <img 
+                src={logoImage} 
+                alt="BrainBloom Logo" 
+                className="w-10 h-10 max-h-[40px] object-contain drop-shadow-sm align-middle mr-1"
+                style={{ verticalAlign: 'middle' }}
+              />
+              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent align-middle" style={{lineHeight: '40px'}}>
+                BrainBloom
+              </h1>
             </motion.div>
-            <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent group-hover:opacity-90 transition-opacity">
-              BrainBloom
-            </h1>
           </Link>
           <BackToChatButton />
         </div>
 
         <div className="flex items-center space-x-4">
+          <motion.a
+            href="https://bolt.new/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <img 
+              src={boltBadgeImage} 
+              alt="Built with Bolt.new" 
+              className="w-8 h-8 object-contain"
+            />
+          </motion.a>
           <HeaderLinks />
           
           <AnimatePresence mode="wait">
@@ -237,25 +258,14 @@ function App() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
                     onClick={() => setShowLoginModal(true)}
-                    className="flex items-center space-x-2 bg-gradient-primary text-white px-4 py-2 rounded-xl font-medium shadow-soft hover:shadow-hover transition-all duration-200"
+                    className="bg-primary-500 hover:bg-primary-600 text-white font-medium px-4 py-2 rounded-lg transition-colors"
                   >
-                    <LogIn size={18} />
-                    <span className="hidden sm:inline">Login</span>
+                    Login
                   </motion.button>
                 )}
 
-                {/* Emergency Button */}
-                <motion.div
-                  key="emergency-button"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                >
-                  <EmergencyButton onClick={handleEmergencyClick} />
-                </motion.div>
+                <EmergencyButton onClick={handleEmergencyClick} />
               </>
             ) : (
               <motion.button
@@ -274,26 +284,19 @@ function App() {
       </motion.header>
 
       {/* Main Content */}
-      <main className="flex-1">
-        <Routes>
-          <Route path="/agents" element={<MeetAgentsScreen />} />
-          <Route path="/faq" element={<FAQScreen />} />
-          <Route path="/" element={
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={showEmergency ? 'emergency' : activeTab}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3 }}
-                className="h-full"
-              >
-                {renderScreen()}
-              </motion.div>
-            </AnimatePresence>
-          } />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+      <main className="flex-1 overflow-hidden px-6 py-8">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={showEmergency ? 'emergency' : activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="h-full"
+          >
+            {renderScreen()}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Navigation */}
@@ -305,7 +308,7 @@ function App() {
             exit={{ y: 100, opacity: 0 }}
             className="sticky bottom-0 z-50"
           >
-            <Navigation activeTab={activeTab} onTabChange={handleTabChange} />
+            <Navigation activeTab={activeTab} onTabChange={setActiveTab} />
           </motion.nav>
         )}
       </AnimatePresence>
@@ -316,7 +319,6 @@ function App() {
         onClose={() => setShowLoginModal(false)}
         onLogin={handleLogin}
         onGoogleLogin={handleGoogleLogin}
-        isLoading={state.isLoading}
       />
     </div>
   );
